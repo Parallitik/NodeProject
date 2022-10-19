@@ -1,22 +1,46 @@
-import fs from 'fs'
-import readLine from 'readline'
+import fs from 'fs';
+import path, { dirname, join } from 'path';
+import http from 'http';
+import url, { fileURLToPath } from 'url';
 
-const readStream = fs.createReadStream('./src/access_tmp.log.txt', 'utf-8');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const firstOutStream = fs.createWriteStream('./src/89.123.1.41_requests.log');
-const secondOutStream = fs.createWriteStream('./src/34.48.240.111_requests.log');
-const trashOutStream = fs.createWriteStream('./src/other_IP_requests.log');
+const isFile = (path) => fs.lstatSync(path).isFile();
 
-const rl = readLine.createInterface({
-    input: readStream,
-});
+(async () => {
+    http
+        .createServer((request, response) => {
+            const filePath = join(
+                process.cwd(),
+                request.url.replace(/\[\.\.]/gi, '..')
+            );
+            if (!fs.existsSync(filePath)) {
+                return response.end('Not found');
+            }
 
-rl.on('line', (line) => {
-    if(line.includes('89.123.1.41')) {
-        firstOutStream.write(line + '\n');
-    } else if (line.includes('34.48.240.111')) {
-        secondOutStream.write(line + '\n');
-    } else {
-        trashOutStream.write(line + '\n');
-    }
-})
+            if (isFile(filePath)) {
+                return fs.createReadStream(filePath, 'utf8').pipe(response);
+            }
+
+            const links = fs
+                .readdirSync(filePath)
+                .map((filename) => [join(request.url, filename), filename])
+                .map(
+                    ([filepath, filename]) =>
+                        `<li><a href="${filepath}">${filename}</a></li>`
+                )
+                .concat([`<li><a href="[..]/">..</a></li>`])
+                .join('');
+
+            const html = fs
+                .readFileSync(join(__dirname, 'index.html'), 'utf8')
+                .replace(/{{ content }}/gi, links);
+
+            response.writeHead(200, {
+                'Content-Type': 'text/html',
+            });
+            response.end(html);
+        })
+        .listen(8000);
+})();

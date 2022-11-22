@@ -4,13 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Parallitik/NodeProject.git"
   },
-  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,6 +18,8 @@
   },
   "homepage": "https://github.com/Parallitik/NodeProject#readme",
   "dependencies": {
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "nodemon": "^2.0.16",
+    "socket.io": "^4.5.3"
   }
 }

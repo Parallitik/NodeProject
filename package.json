@@ -1,0 +1,25 @@
+{
+  "name": "nodeproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Parallitik/NodeProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Parallitik/NodeProject/issues"
+  },
+  "homepage": "https://github.com/Parallitik/NodeProject#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "nodemon": "^2.0.16",
+    "socket.io": "^4.5.3"
+  }
+}
